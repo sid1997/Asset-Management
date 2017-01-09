@@ -1,0 +1,161 @@
+<apex:page standardController="Asset__c" extensions="AssetsVFPage">
+<apex:pageMessages ></apex:pageMessages>
+<apex:form id="t5">
+<apex:sectionHeader title="Assets" subtitle="{!Asset__c.Name}"/>
+    <apex:pageBlock title="Asset Owned Detail">
+        <apex:pageBlockSection title="Assets Owned" columns="2">
+            <apex:outputField value="{!Asset__c.Name}"/>
+            <apex:outputField value="{!Asset__c.Total_Quantity__c}"/>
+            <apex:outputField value="{!Asset__c.Quantity_Available__c}"/>
+            <apex:outputField value="{!Asset__c.Quantity_Used__c}"/>
+            <apex:outputField value="{!Asset__c.Quantity_Damaged__c}"/>
+            <apex:outputField value="{!Asset__c.Quantity_Lost__c}"/>
+            <apex:outputField value="{!Asset__c.Quantity_Sold__c}"/>
+            <apex:outputField value="{!Asset__c.Available_Date__c}"/>
+            <apex:outputField value="{!Asset__c.Remarks__c}"/>
+         <div>
+            <apex:chart height="400" width="500" data="{!pieData}">
+            <apex:pieSeries dataField="quantity" labelField="name"/>
+            <apex:legend position="right"></apex:legend>
+            </apex:chart>
+         </div>   
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Materials In" columns="8" id="t1">
+           <apex:variable value="{!-1}" var="R"/>
+           <apex:pageBlockTable value="{!MIList}" var="mi">
+               <apex:column headerValue="Asset Name">
+                   <apex:outputField value="{!mi.Asset__c}"/>
+                   <apex:variable value="{!R+1}" var="R"/>
+               </apex:column>
+               <apex:column headerValue="Account">
+                   <apex:inputField value="{!mi.Account__c}"/>
+               </apex:column>
+               <apex:column headerValue="Contact">
+                   <apex:inputField value="{!mi.Contact__c}"/>
+               </apex:column>
+               <apex:column headerValue="Quantity">
+                   <apex:inputField value="{!mi.Quantity__c}"/>
+               </apex:column>
+               <apex:column headerValue="Type">
+                   <apex:inputField value="{!mi.Type__c}"/>
+               </apex:column>
+               <apex:column headerValue="Remarks">
+                   <apex:inputField value="{!mi.Remarks__c}"/>
+               </apex:column>
+               <apex:column headerValue="Action">
+                   <apex:commandLink action="{!deleteMatIn}" value="Delete" reRender="t1" immediate="true">
+                   <apex:param name="Index" assignTo="{!index}" value="{!R}"/>
+                   </apex:commandLink>
+               </apex:column>
+           </apex:pageBlockTable>
+           <div>
+            <apex:commandButton action="{!addRowMatIn}" value="Add Row" reRender="t1" immediate="true"/> 
+           <apex:commandButton action="{!saveMatIn}" value="Save"/> 
+           </div>
+        </apex:pageBlockSection>
+
+       <apex:pageBlockSection title="Materials Out" columns="8" id="t2">
+           <apex:variable value="{!-1}" var="X"/>
+           <apex:pageBlockTable value="{!MOList}" var="mo">
+               <apex:column headerValue="Asset Name">
+                   <apex:outputField value="{!mo.Asset__c}"/>
+                   <apex:variable value="{!X+1}" var="X"/>
+               </apex:column>
+               <apex:column headerValue="Person/Organisation">
+                   <apex:inputField value="{!mo.Person_Organisation__c}"/>
+               </apex:column>
+               <apex:column headerValue="Contact">
+                   <apex:inputField value="{!mo.Contact__c}"/>
+               </apex:column>
+               <apex:column headerValue="Quantity">
+                   <apex:inputField value="{!mo.Quantity__c}"/>
+               </apex:column>
+               <apex:column headerValue="Type">
+                   <apex:inputField value="{!mo.Type__c}"/>
+               </apex:column>
+               <apex:column headerValue="Remarks">
+                   <apex:inputField value="{!mo.Remarks__c}"/>
+               </apex:column>
+               <apex:column headerValue="Action">
+                   <apex:commandLink action="{!deleteMatOut}" value="Delete" reRender="t2" immediate="true">
+                   <apex:param name="Index1" assignTo="{!index1}" value="{!X}"/>
+                   </apex:commandLink>
+               </apex:column>
+           </apex:pageBlockTable>
+           <div>
+            <apex:commandButton action="{!addRowMatOut}" value="Add Row" reRender="t2" immediate="true"/> 
+           <apex:commandButton action="{!saveMatOut}" value="Save"/> 
+           </div>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Asset Issued" columns="8" id="t3">
+           <apex:variable value="{!-1}" var="Y"/>
+           <apex:pageBlockTable value="{!issueList}" var="is">
+               <apex:column headerValue="Asset Name">
+                   <apex:outputField value="{!is.Asset__c}"/>
+                   <apex:variable value="{!Y+1}" var="Y"/>
+               </apex:column>
+               <apex:column headerValue="Contact">
+                   <apex:inputField value="{!is.Contact__c}"/>
+               </apex:column>
+               <apex:column headerValue="Quantity">
+                   <apex:inputField value="{!is.Quantity__c}"/>
+               </apex:column>
+               <apex:column headerValue="Issue Date">
+                   <apex:inputField value="{!is.Issue_Date__c}"/>
+               </apex:column>
+               <apex:column headerValue="Expected Return Date">
+                   <apex:inputField value="{!is.Expected_Return_Date__c}"/>
+               </apex:column>
+               <apex:column headerValue="Remarks">
+                   <apex:inputField value="{!is.Remarks__c}"/>
+               </apex:column>
+               <apex:column headerValue="Action">
+                   <apex:commandLink action="{!deleteIssue}" value="Delete" reRender="t3" immediate="true">
+                   <apex:param name="Index2" assignTo="{!index2}" value="{!Y}"/>
+                   </apex:commandLink>
+               </apex:column>
+           </apex:pageBlockTable>
+           <div>
+            <apex:commandButton action="{!addRowIssue}" value="Add Row" reRender="t3" immediate="true"/> 
+           <apex:commandButton action="{!saveIssue}" value="Save"/> 
+           </div>
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Asset Returned" columns="8" id="t4">
+           <apex:variable value="{!-1}" var="Z"/>
+           <apex:pageBlockTable value="{!returnList}" var="ar">
+               <apex:column headerValue="Asset Name">
+                   <apex:outputField value="{!ar.Asset__c}"/>
+                   <apex:variable value="{!Z+1}" var="Z"/>
+               </apex:column>
+               <apex:column headerValue="Contact">
+                   <apex:inputField value="{!ar.Contact__c}"/>
+               </apex:column>
+               <apex:column headerValue="Quantity">
+                   <apex:inputField value="{!ar.Quantity__c}"/>
+               </apex:column>
+               <apex:column headerValue="Expected Return Date">
+                   <apex:inputField value="{!ar.Expected_Return_Date__c}"/>
+               </apex:column>
+               <apex:column headerValue="Date Returned">
+                   <apex:inputField value="{!ar.Date_Returned__c}"/>
+               </apex:column>
+               <apex:column headerValue="Remarks">
+                   <apex:inputField value="{!ar.Remarks__c}"/>
+               </apex:column>
+               <apex:column headerValue="Action">
+                   <apex:commandLink action="{!deleteReturn}" value="Delete" reRender="t4" immediate="true">
+                   <apex:param name="Index3" assignTo="{!index3}" value="{!Z}"/>
+                   </apex:commandLink>
+               </apex:column>
+           </apex:pageBlockTable>
+           <div>
+            <apex:commandButton action="{!addRowReturn}" value="Add Row" reRender="t4" immediate="true"/> 
+           <apex:commandButton action="{!saveReturn}" value="Save"/> 
+           </div>
+        </apex:pageBlockSection>
+    </apex:pageBlock> 
+</apex:form> 
+</apex:page>
